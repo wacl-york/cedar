@@ -1,0 +1,26 @@
+Package: cedar
+Type: Package
+Title: Authenticate to and Download from CEDA
+Version: 0.1.0
+Authors@R: c(
+    person(
+      "Will", "Drysdale",
+      email = "will.drysdale@york.ac.uk",
+      role = c("aut", "cre")
+    )
+  )
+Description: Unoffical tools for accesing the Centre for Environmental Data 
+  Analysis' repostiories. Contains functions for authenticating with their 
+  openDAP service, for listing and downloading the contents of the archive.
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+Roxygen: list(markdown = TRUE)
+Imports: 
+    cli,
+    httr2,
+    jsonlite,
+    lubridate,
+    stringr,
+    tibble
+License: AGPL (>= 3)
