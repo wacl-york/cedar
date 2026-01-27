@@ -1,4 +1,4 @@
-#' List Folder Contents
+#' CEDA Folder Contents
 #'
 #' Returns the json listing of a CEDA folder at a given URL
 #'
@@ -8,7 +8,7 @@
 #'
 #' @export
 
-list_folder_contents = function(url){
+ceda_folder_contents = function(url){
   jsonlite::fromJSON(paste0(url,"?json"))$items |>
     tibble::as_tibble()
 
