@@ -4,12 +4,17 @@
 \alias{ceda_token}
 \title{CEDA Access Token}
 \usage{
-ceda_token(user, pass)
+ceda_token(user, pass, force = FALSE, suppressError = FALSE)
 }
 \arguments{
 \item{user}{CEDA username}
 
 \item{pass}{CEDA password}
+
+\item{force}{should a new token be requested, even if the current one hasn't expired? Default FALSE}
+
+\item{suppressError}{stops the function erroring when a status other than 200 is returned.
+used by \code{ceda_status()}. Default FALSE}
 }
 \description{
 Return an exiting access token, or generate a fresh one

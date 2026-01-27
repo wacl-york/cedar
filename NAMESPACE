@@ -2,8 +2,11 @@
 
 export(ceda_download)
 export(ceda_folder_contents)
+export(ceda_status)
 export(ceda_token)
 export(ceda_url)
 export(ceda_url_dap)
+export(ceda_url_status)
+export(ceda_url_status_json)
 export(ceda_url_token)
 export(resp_is_body_binary)
