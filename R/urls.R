@@ -24,3 +24,21 @@ ceda_url_dap = function(){
 ceda_url_token = function(){
   "https://services-beta.ceda.ac.uk/api/token/create/"
 }
+
+#' CEDA Status json
+#'
+#' returns the URL for the status.json page
+#' @export
+
+ceda_url_status_json = function(){
+  "https://cedadev.github.io/ceda-status/status.json"
+}
+
+#' CEDA Status
+#'
+#' returns the URL for the status.json page
+#' @export
+
+ceda_url_status = function(){
+  "https://www.ceda.ac.uk/status/"
+}
