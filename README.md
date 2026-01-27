@@ -20,12 +20,12 @@ You will need to provide your credentials to `cedar::ceda_download()`. To avoid 
 
 ### List Available Data
 
-Data can be browsed [online](https://data.ceda.ac.uk/), once you have located your data set of interest you can import a list of files using the `list_folder_contents()` function, which collects the json data of the file structure as a tibble data frame, e.g.:
+Data can be browsed [online](https://data.ceda.ac.uk/), once you have located your data set of interest you can import a list of files using the `ceda_folder_contents()` function, which collects the json data of the file structure as a tibble data frame, e.g.:
 
 ```R
 url = "https://data.ceda.ac.uk/badc/osca/data/iop-1-summer"
 
-cedar::list_folder_contents()
+cedar::ceda_folder_contents()
 ```
 
 returns
@@ -42,13 +42,14 @@ returns
 6 /badc/osca/data/iop-1-summer… /badc/os… york… 2023-04-04T1… spot-5… .csv  6.58e7 file  on_disk   NA     3c26… 2025-09-1… https:/… 2023-0… 2021-07-07 <df>     
 
 ```
+### Download
 
-This data frame contains various metadata on the files, but crucially contains the openDAP download URL in the `download` column. This can be passed to `ceda_download()` along with your credentials to download a file:
+The data frame returned by `ceda_folder_contents()` contains various metadata on the files, but crucially contains the openDAP download URL in the `download` column. This can be passed to `ceda_download()` along with your credentials to download a file:
 
 ```R
 url = "https://data.ceda.ac.uk/badc/osca/data/iop-1-summer"
 
-files = cedar::list_folder_contents(url)
+files = cedar::ceda_folder_contents(url)
 
 cedar::ceda_download(
   url = files$download[2],
@@ -57,3 +58,8 @@ cedar::ceda_download(
   pass = keyring::key_get("ceda_pass")
 )
 ```
+
+### Check CEDA Status
+
+Having issues? `ceda_status()` will try to check some CEDA services, as well as reporting some information from the [CEDA Status page](https://www.ceda.ac.uk/status/). Optionally, if supplied with a username and password it will also attempt to create a openDAP access token. 
+
