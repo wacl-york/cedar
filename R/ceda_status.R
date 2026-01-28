@@ -102,6 +102,8 @@ format_ceda_status = function(respStatus){
           status == "down" ~ cli::bg_red("down"),
           status == "degraded" ~ cli::col_black(cli::bg_yellow("degraded")),
           status == "resolved" ~ cli::col_black(cli::bg_green("resolved")),
+          status == "at risk" ~ cli::col_white(cli::bg_black("at risk")),
+          TRUE ~ status
         )
       )
 
