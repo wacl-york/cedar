@@ -19,10 +19,12 @@ ceda_status = function(user = NULL, pass = NULL){
     token = ceda_token(user, pass, force = T, suppressError = T)
 
     if(the$access_token_response$status_code == 200){
+      cli::cli_h1("openDAP Token")
       cli::cli_alert_success(
         paste0("Token request at ", lubridate::round_date(the$access_token_time_of_last_request, "1 sec"), " returned status 200: OK")
       )
     }else{
+      cli::cli_h1("openDAP Token")
       cli::cli_alert_danger(
         paste0("Token request at ", lubridate::round_date(the$access_token_time_of_last_request, "1 sec"), " returned status ", the$access_token_response$status_code,": ", httr2::resp_status_desc(the$access_token_response))
       )
@@ -32,6 +34,8 @@ ceda_status = function(user = NULL, pass = NULL){
     cli::cli_alert_info("CEDA username and password required to test token service")
   }
 
+  cli::cli_h1("Endpoints")
+
   # Send Test Requests to Endpoints
   reqList = list(
     data = httr2::request(ceda_url()),
@@ -39,29 +43,52 @@ ceda_status = function(user = NULL, pass = NULL){
     status = httr2::request(ceda_url_status_json())
   ) |>
     purrr::map(
-      \(x) httr2::req_error(x, is_error = \(resp) FALSE)
+      \(x) {
+        x |>
+          httr2::req_error(is_error = \(resp) FALSE) |>
+          httr2::req_timeout(5)
+          }
     )
 
   respList  = purrr::map(
-    reqList, httr2::req_perform
+    reqList,
+    \(x) {
+      resp = tryCatch({
+          httr2::req_perform(x)
+        },
+        error = function(e){
+          e
+        })
+      }
   )
 
   for(i in 1:length(respList)){
-    if(respList[[i]]$status_code == 200){
-      cli::cli_alert_success(
-        paste0(respList[[i]]$request$url," returned status 200: OK")
-      )
-    }else{
+
+    if(rlang::is_error(respList[[i]])){ # first check if we just errored (usually a timeout)
+
       cli::cli_alert_danger(
-        paste0(respList[[i]]$request$url," returned status ", respList[[i]]$status_code,": ", httr2::resp_status_desc(respList[[i]]))
+        paste0("Request to ", reqList[[i]]$url, " errored with message: ", respList[[i]]$message," - Uh oh.")
       )
+
+    }else{
+      if(respList[[i]]$status_code == 200){
+        cli::cli_alert_success(
+          paste0(respList[[i]]$request$url," returned status 200: OK")
+        )
+      }else{
+        cli::cli_alert_danger(
+          paste0(respList[[i]]$request$url," returned status ", respList[[i]]$status_code,": ", httr2::resp_status_desc(respList[[i]]))
+        )
+      }
     }
+
   }
 
   # Did we get the status? If so print now
-
-  if(respList$status$status_code == 200){
-    format_ceda_status(respList$status)
+  if(!is.null(respList$status$status_code)){
+    if(respList$status$status_code == 200){
+      format_ceda_status(respList$status)
+    }
   }
 
 }
@@ -97,15 +124,7 @@ format_ceda_status = function(respStatus){
       dplyr::arrange(date) |>
       dplyr::mutate(date = as.character(date)) |>
       dplyr::relocate(date) |>
-      dplyr::mutate(
-        status = dplyr::case_when(
-          status == "down" ~ cli::bg_red("down"),
-          status == "degraded" ~ cli::col_black(cli::bg_yellow("degraded")),
-          status == "resolved" ~ cli::col_black(cli::bg_green("resolved")),
-          status == "at risk" ~ cli::col_white(cli::bg_black("at risk")),
-          TRUE ~ status
-        )
-      )
+      format_ceda_status_string()
 
     cat(clitable::cli_table(currentFormatted), sep = "\n")
 
@@ -120,13 +139,7 @@ format_ceda_status = function(respStatus){
       dplyr::arrange(date) |>
       dplyr::mutate(date = as.character(date)) |>
       dplyr::relocate(date) |>
-      dplyr::mutate(
-        status = dplyr::case_when(
-          status == "down" ~ cli::bg_red("down"),
-          status == "degraded" ~ cli::col_black(cli::bg_yellow("degraded")),
-          status == "resolved" ~ cli::col_black(cli::bg_green("resolved")),
-        )
-      )
+      format_ceda_status_string()
 
     cat(clitable::cli_table(futureFormatted), sep = "\n")
 
@@ -141,4 +154,23 @@ format_ceda_status = function(respStatus){
 
 }
 
+#' Format CEDA Status String
+#'
+#' Formats the particular service status strings with ansi colours
+#'
+#' @param status status table partially formatted by \code{format_ceda_status()}
 
+format_ceda_status_string = function(status){
+
+  status |>
+    dplyr::mutate(
+      status = dplyr::case_when(
+        status == "down" ~ cli::bg_red("down"),
+        status == "degraded" ~ cli::col_black(cli::bg_yellow("degraded")),
+        status == "resolved" ~ cli::col_black(cli::bg_green("resolved")),
+        status == "at risk" ~ cli::col_white(cli::bg_black("at risk")),
+        TRUE ~ cli::ansi_string(status)
+      )
+    )
+
+}
