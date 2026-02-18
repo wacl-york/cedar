@@ -9,8 +9,8 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: Unoffical tools for accesing the Centre for Environmental Data 
-  Analysis' repostiories. Contains functions for authenticating with their 
+Description: Unofficial tools for accessing the Centre for Environmental Data 
+  Analysis' repositories. Contains functions for authenticating with their 
   openDAP service, for listing and downloading the contents of the archive.
 Encoding: UTF-8
 RoxygenNote: 7.3.2
