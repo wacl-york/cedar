@@ -1,7 +1,7 @@
 # cedar 
 
 ## Description 
-`cedar` is an R package for interfacing with the [Centre for Environmental Data Analysis](https://www.ceda.ac.uk/)' (CEDA) data archive. It facilitates authentication via the [openDAP](https://help.ceda.ac.uk/article/4431-ceda-archive-web-download-and-services) endpoint, which requires authentication. Users can register for an account on the [CEDA website](https://services.ceda.ac.uk/cedasite/register/info/). It is not an official CEDA project and users should be familiarise themselves with the [guidance provided by CEDA](https://help.ceda.ac.uk/). 
+`cedar` is an R package for interfacing with the [Centre for Environmental Data Analysis](https://www.ceda.ac.uk/)' (CEDA) data archive. It facilitates authentication via the [openDAP](https://help.ceda.ac.uk/article/4431-ceda-archive-web-download-and-services) endpoint, which requires authentication. Users can register for an account on the [CEDA website](https://services.ceda.ac.uk/cedasite/register/info/). It is not an official CEDA project and users should familiarise themselves with the [guidance provided by CEDA](https://help.ceda.ac.uk/). 
 
 ## Install
 
@@ -25,7 +25,7 @@ Data can be browsed [online](https://data.ceda.ac.uk/), once you have located yo
 ```R
 url = "https://data.ceda.ac.uk/badc/osca/data/iop-1-summer"
 
-cedar::ceda_folder_contents()
+cedar::ceda_folder_contents(url)
 ```
 
 returns
